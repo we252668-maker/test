@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: brainforge-api
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python render_app.py
+    envVars:
+      - key: DISCORD_WEBHOOK_URL
+        sync: false
+      - key: DATABASE_PATH
+        value: /var/data/engineer_hub.db
+      - key: REMINDER_POLL_INTERVAL_SECONDS
+        value: 30

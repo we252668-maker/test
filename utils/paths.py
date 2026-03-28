@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -37,4 +38,9 @@ def get_bundled_database_path() -> Path:
 
 
 def get_database_path() -> Path:
+    env_database_path = os.getenv("DATABASE_PATH", "").strip()
+    if env_database_path:
+        database_path = Path(env_database_path)
+        database_path.parent.mkdir(parents=True, exist_ok=True)
+        return database_path
     return ensure_data_dir() / DATABASE_FILE_NAME

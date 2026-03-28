@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sqlite3
 from datetime import datetime
 
@@ -13,6 +14,10 @@ class DiscordService:
         self.timeout_seconds = timeout_seconds
 
     def get_settings(self) -> SettingsModel:
+        env_webhook_url = os.getenv("DISCORD_WEBHOOK_URL", "").strip()
+        if env_webhook_url:
+            return SettingsModel(discord_webhook_url=env_webhook_url)
+
         cursor = self.connection.cursor()
         cursor.execute(
             """
@@ -27,6 +32,9 @@ class DiscordService:
         return SettingsModel(discord_webhook_url=row["discord_webhook_url"])
 
     def save_settings(self, settings: SettingsModel) -> None:
+        if self.uses_environment_webhook():
+            return
+
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         cursor = self.connection.cursor()
         cursor.execute(
@@ -42,21 +50,23 @@ class DiscordService:
         self.connection.commit()
 
     def send_creation_notice(self, reminder: Reminder) -> None:
-        self._post_payload(self._build_payload("提醒建立成功", reminder))
+        self._post_payload(self._build_payload("Reminder Created", reminder))
 
     def send_due_reminder(self, reminder: Reminder) -> None:
-        self._post_payload(self._build_payload("提醒時間已到", reminder))
+        self._post_payload(self._build_payload("Reminder Due", reminder))
 
     def send_test_message(self) -> None:
-        self._post_payload({"content": "Discord 連接測試成功"})
+        self._post_payload({"content": "Discord webhook test message from BrainForge."})
+
+    def uses_environment_webhook(self) -> bool:
+        return bool(os.getenv("DISCORD_WEBHOOK_URL", "").strip())
 
     def _post_payload(self, payload: dict) -> None:
         import requests
 
-        settings = self.get_settings()
-        webhook_url = settings.discord_webhook_url.strip()
+        webhook_url = self.get_settings().discord_webhook_url.strip()
         if not webhook_url:
-            raise ValueError("請先輸入 Discord Webhook URL")
+            raise ValueError("Missing Discord webhook URL.")
 
         response = requests.post(
             webhook_url,
@@ -65,11 +75,11 @@ class DiscordService:
         )
         if response.status_code >= 400:
             detail = response.text.strip() or f"HTTP {response.status_code}"
-            raise ValueError(f"Discord 通知發送失敗：{detail[:300]}")
+            raise ValueError(f"Discord webhook request failed: {detail[:300]}")
 
     def _build_payload(self, title: str, reminder: Reminder) -> dict:
         reminder_date, reminder_time = self._split_due_at(reminder.due_at)
-        category = reminder.category or "未分類"
+        category = reminder.category or "Uncategorized"
         note = reminder.description or "-"
         return {
             "embeds": [
@@ -77,10 +87,10 @@ class DiscordService:
                     "title": title,
                     "color": 3447003,
                     "fields": [
-                        {"name": "標題", "value": reminder.title or "-", "inline": False},
-                        {"name": "時間", "value": f"{reminder_date} {reminder_time}", "inline": False},
-                        {"name": "分類", "value": category, "inline": True},
-                        {"name": "備註", "value": note, "inline": False},
+                        {"name": "Title", "value": reminder.title or "-", "inline": False},
+                        {"name": "Time", "value": f"{reminder_date} {reminder_time}", "inline": False},
+                        {"name": "Category", "value": category, "inline": True},
+                        {"name": "Note", "value": note, "inline": False},
                     ],
                 }
             ]

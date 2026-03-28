@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from controllers.note_controller import NoteController
 from controllers.reminder_controller import ReminderController
 from controllers.search_controller import SearchController
@@ -8,10 +10,14 @@ from controllers.snippet_controller import SnippetController
 from database.connection import DatabaseManager
 from services.attachment_service import AttachmentService
 from services.auth_service import AuthService
+from services.api_client import ApiClient
 from services.discord_service import DiscordService
+from services.noop_reminder_monitor_service import NoopReminderMonitorService
 from services.export_service import ExportService
 from services.note_service import NoteService
 from services.permission_service import PermissionService
+from services.remote_discord_service import RemoteDiscordService
+from services.remote_reminder_service import RemoteReminderService
 from services.reminder_monitor_service import ReminderMonitorService
 from services.reminder_service import ReminderService
 from services.search_service import SearchService
@@ -32,12 +38,20 @@ class MainController:
         self.permission_service = PermissionService(connection)
         self.attachment_service = AttachmentService(connection)
         self.export_service = ExportService(connection)
-        self.discord_service = DiscordService(connection)
-        self.reminder_service = ReminderService(connection)
         self.note_service = NoteService(connection)
         self.snippet_service = SnippetService(connection)
         self.search_service = SearchService(connection)
-        self.reminder_monitor_service = ReminderMonitorService(self.database_manager.database_path)
+        self.api_base_url = os.getenv("BRAINFORGE_API_BASE_URL", "").strip()
+
+        if self.api_base_url:
+            api_client = ApiClient(self.api_base_url)
+            self.discord_service = RemoteDiscordService(api_client)
+            self.reminder_service = RemoteReminderService(api_client)
+            self.reminder_monitor_service = NoopReminderMonitorService()
+        else:
+            self.discord_service = DiscordService(connection)
+            self.reminder_service = ReminderService(connection)
+            self.reminder_monitor_service = ReminderMonitorService(self.database_manager.database_path)
 
         self.main_window = MainWindow()
         self.settings_controller = SettingsController(
