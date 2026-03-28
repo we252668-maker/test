@@ -1,10 +1,21 @@
 from __future__ import annotations
 
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from models.reminder import Reminder
 
+
+TAIPEI_TIMEZONE = ZoneInfo("Asia/Taipei")
+UTC_TIMEZONE = timezone.utc
+
+REMINDER_DATETIME_FORMATS = (
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d %H:%M",
+    "%Y-%m-%dT%H:%M:%S",
+    "%Y-%m-%dT%H:%M",
+)
 
 REMINDER_SELECT_FIELDS = """
     id,
@@ -72,7 +83,7 @@ class ReminderService:
             return None
         return self._map_row(row)
 
-    def get_due_discord_reminders(self) -> list[Reminder]:
+    def get_pending_discord_reminders(self) -> list[Reminder]:
         cursor = self.connection.cursor()
         cursor.execute(
             f"""
@@ -82,7 +93,6 @@ class ReminderService:
                 status = 'pending'
                 AND due_at != ''
                 AND discord_due_notice_sent_at = ''
-                AND datetime(due_at) <= datetime('now', 'localtime')
             ORDER BY due_at ASC, id ASC
             """
         )
@@ -223,6 +233,49 @@ class ReminderService:
         )
         self.connection.commit()
 
+    @classmethod
+    def current_time(cls) -> datetime:
+        return datetime.now(TAIPEI_TIMEZONE)
+
+    @classmethod
+    def parse_due_at(cls, due_at: str) -> datetime | None:
+        normalized = due_at.strip()
+        if not normalized:
+            return None
+
+        iso_candidate = normalized.replace("Z", "+00:00")
+
+        try:
+            parsed = datetime.fromisoformat(iso_candidate)
+        except ValueError:
+            parsed = None
+
+        if parsed is None:
+            for time_format in REMINDER_DATETIME_FORMATS:
+                try:
+                    parsed = datetime.strptime(normalized, time_format)
+                    break
+                except ValueError:
+                    continue
+
+        if parsed is None:
+            return None
+
+        # 有 tzinfo：代表可能是 DB 的 UTC，先轉台灣時間
+        if parsed.tzinfo is not None:
+            return parsed.astimezone(TAIPEI_TIMEZONE)
+
+        # 無 tzinfo：判斷來源
+        # 若字串帶 +00:00 / Z 已在 fromisoformat 階段處理，不會走到這裡
+        # 走到這裡代表通常是前端輸入，視為台灣時間
+        return parsed.replace(tzinfo=TAIPEI_TIMEZONE)
+
+    @classmethod
+    def format_datetime(cls, value: datetime | None) -> str:
+        if value is None:
+            return ""
+        return value.astimezone(TAIPEI_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S %Z")
+
     def _map_row(self, row: sqlite3.Row) -> Reminder:
         return Reminder(
             id=row["id"],
@@ -240,4 +293,5 @@ class ReminderService:
         )
 
     def _current_timestamp(self) -> str:
-        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # DB 一律存 UTC，避免和 API/前端台灣時間混用
+        return datetime.now(UTC_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S+00:00")

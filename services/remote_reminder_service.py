@@ -4,6 +4,10 @@ import requests
 
 from models.reminder import Reminder
 from services.api_client import ApiClient
+from utils.config import BASE_URL
+
+
+REMINDERS_API_URL = f"{BASE_URL}/api/reminders"
 
 
 class RemoteReminderService:
@@ -11,16 +15,16 @@ class RemoteReminderService:
         self.api_client = api_client
 
     def list_reminders(self) -> list[Reminder]:
-        data = self.api_client.get("/api/reminders").json()
+        data = self.api_client.get(REMINDERS_API_URL).json()
         return [self._map_item(item) for item in data]
 
     def search_reminders(self, keyword: str) -> list[Reminder]:
-        data = self.api_client.get("/api/reminders", params={"q": keyword}).json()
+        data = self.api_client.get(REMINDERS_API_URL, params={"q": keyword}).json()
         return [self._map_item(item) for item in data]
 
     def get_reminder_by_id(self, reminder_id: int) -> Reminder | None:
         try:
-            response = self.api_client.get(f"/api/reminders/{reminder_id}")
+            response = self.api_client.get(f"{REMINDERS_API_URL}/{reminder_id}")
         except requests.HTTPError as exc:
             if exc.response is not None and exc.response.status_code == 404:
                 return None
@@ -37,7 +41,7 @@ class RemoteReminderService:
         status: str,
     ) -> Reminder:
         data = self.api_client.post(
-            "/api/reminders",
+            REMINDERS_API_URL,
             json={
                 "title": title,
                 "category": category,
@@ -61,7 +65,7 @@ class RemoteReminderService:
     ) -> Reminder | None:
         try:
             response = self.api_client.put(
-                f"/api/reminders/{reminder_id}",
+                f"{REMINDERS_API_URL}/{reminder_id}",
                 json={
                     "title": title,
                     "category": category,
@@ -79,7 +83,7 @@ class RemoteReminderService:
 
     def delete_reminder(self, reminder_id: int) -> bool:
         try:
-            self.api_client.delete(f"/api/reminders/{reminder_id}")
+            self.api_client.delete(f"{REMINDERS_API_URL}/{reminder_id}")
         except requests.HTTPError as exc:
             if exc.response is not None and exc.response.status_code == 404:
                 return False

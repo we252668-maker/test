@@ -2,6 +2,8 @@ from __future__ import annotations
 
 APP_NAME = "Engineer Hub"
 DATABASE_FILE_NAME = "engineer_hub.db"
+BASE_URL = "https://test-1-s4pq.onrender.com"
+API_TIMEOUT_SECONDS = 30
 
 # Feature flags reserved for commercial editions and staged rollout.
 FEATURE_AUTH_ENABLED = False
