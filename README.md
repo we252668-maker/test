@@ -1,88 +1,151 @@
-# ForgeDesk
+# Engineer Hub
 
-PyQt 打造的工程工作台，將 **提醒排程、技術筆記、程式片段管理、關鍵字搜尋與 Discord 通知** 整合在同一個桌面應用程式中。  
-專案定位不是單一用途的小工具，而是面向開發者日常工作的本機效率平台，適合整理任務、沉澱知識並集中管理常用程式碼資產。
+Engineer Hub 是一套以 **Python + PyQt6** 打造的桌面任務管理與通知系統，專為需要管理待辦、排程提醒與外部通知整合的使用情境而設計。專案支援 **本地桌面執行** 與 **Render 雲端部署**，可用於個人生產力工具、內部團隊提醒系統，或延伸為商業化 SaaS / 工具型產品的基礎版本。
 
----
+本專案聚焦在一個清楚且具實務價值的核心流程：
 
-## 專案簡介
+- 建立任務
+- 設定提醒時間
+- 自動觸發通知
+- 透過 Discord Webhook 即時推送訊息
+- 同時支援 GUI 與雲端 API 版本
 
-**ForgeDesk** 是一套以桌面端為核心的開發工作輔助工具，使用 **PyQt** 建構互動介面，並以 **SQLite** 作為本機資料儲存層。  
-它聚焦在工程實務中最常見的幾個資訊管理場景：
-
-- 追蹤具時程性的提醒事項
-- 整理技術筆記與工作紀錄
-- 保存可重用的程式片段
-- 透過關鍵字快速檢索內容
-- 在重要提醒建立或到期時推送 Discord 通知
-
-整體設計採取模組化分層，讓 UI、流程控制、資料存取與通知整合彼此分離，便於後續維護與擴充。
+如果你正在尋找一個適合展示桌面應用開發能力、通知系統整合能力、以及可部署架構思維的作品，Engineer Hub 是一個兼具作品集價值與商業延伸潛力的專案。
 
 ---
 
-## 功能特色
+## 專案介紹
 
-- 📅 **排程提醒系統**
-  - 建立、編輯、刪除提醒事項
-  - 支援日期、時間、分類、優先度與備註
-  - 背景輪詢到期提醒，處理通知發送流程
+Engineer Hub 的核心目標，是將「任務建立」、「時間排程」、「通知發送」整合在同一套應用中，讓使用者不需要依賴複雜的外部平台，也能快速建立一個可運作的提醒與通知工作流。
 
-- 📝 **技術筆記管理**
-  - 建立與維護技術筆記
-  - 適合整理故障排查、設計想法與工作紀錄
+相較於單純的待辦工具，Engineer Hub 更強調：
 
-- 💻 **Code Snippet 保存**
-  - 保存常用程式碼片段
-  - 便於重複使用與內部知識累積
+- 明確的提醒流程
+- 可視化桌面操作介面
+- Discord 通知整合
+- 本地與雲端雙版本架構
+- 可持續擴充為多使用者、團隊型產品
 
-- 🔎 **關鍵字搜尋**
-  - 以統一介面快速查找提醒、筆記與內容資料
-  - 提升本機知識檢索效率
+這使它不僅適合作為個人開發作品，也適合用來展示工程師在以下面向的能力：
 
-- 🔔 **Discord 通知**
-  - 支援 Discord Webhook 設定
-  - 可用於提醒建立通知與到期通知
+- Desktop App 開發
+- GUI / 使用者互動設計
+- 排程與通知機制設計
+- 本地資料儲存與服務拆分
+- 雲端部署與產品化思維
+
+---
+
+## Demo
+
+> 以下區塊可直接替換成你的實際截圖、操作錄影或部署連結。
+
+### 桌面版畫面
+
+![Engineer Hub Desktop Demo](./docs/demo-desktop.png)
+
+### 任務建立流程
+
+![Engineer Hub Create Task Demo](./docs/demo-create-task.png)
+
+### Discord 通知示意
+
+![Engineer Hub Discord Demo](./docs/demo-discord.png)
+
+### 雲端 API / Render 部署示意
+
+![Engineer Hub Cloud Demo](./docs/demo-cloud.png)
+
+---
+
+## 功能
+
+### 核心功能
+
+- 建立任務與提醒事項
+- 設定提醒時間與狀態
+- 到期後自動發送 Discord 通知
+- 建立成功後可立即發送建立通知
+- 使用 GUI 介面進行操作
+- 支援本地桌面版與雲端 API 版本
+
+### 使用者價值
+
+- 降低手動追蹤任務的成本
+- 讓提醒流程更即時、更可視化
+- 適合個人工作站、工程團隊、專案管理輔助場景
+- 可作為內部工具產品雛形，快速延伸到企業應用
+
+### 商業化潛力
+
+- 可延伸為團隊任務管理工具
+- 可增加多通知通道，例如 Email、LINE、Slack
+- 可擴充權限、帳號系統與工作區概念
+- 可演進為 B2B 內部流程自動化產品
 
 ---
 
 ## 技術架構
 
-- **PyQt6**：桌面 UI 與互動流程
-- **SQLite**：本機資料儲存
-- **requests**：HTTP 請求，用於 Discord Webhook 發送
-- **Discord Webhook**：提醒通知整合
-- **Python 3**：主要開發語言
+Engineer Hub 採用以 Python 為核心的桌面應用架構，結合本地資料儲存、通知服務與雲端部署能力。
+
+### 技術棧
+
+- Python 3.9
+- PyQt6
+- requests
+- python-dotenv
+- Discord Webhook
+- SQLite
+- Render
+
+### 架構說明
+
+```text
+使用者操作 GUI
+    ↓
+PyQt 視圖層（views）
+    ↓
+Controller 控制流程（controllers）
+    ↓
+Service 業務邏輯（services）
+    ↓
+SQLite / Discord Webhook / Render API
+```
+
+### 模組分層
+
+- `views/`
+  負責桌面 UI 顯示與互動元件
+- `controllers/`
+  負責事件處理、畫面流程與使用者操作協調
+- `services/`
+  負責任務邏輯、通知發送、API 呼叫與排程處理
+- `models/`
+  負責資料模型與欄位結構
+- `database/`
+  負責 SQLite 初始化與連線管理
+- `render_app.py`
+  提供雲端部署用的 API 與排程入口
+- `main.py`
+  桌面應用程式進入點
+
+### 設計亮點
+
+- 桌面端與雲端端具備可分離的執行模式
+- 通知功能可重用既有 Discord service
+- 採用清楚的 controller / service 分層，易於維護與擴充
+- 適合後續接入更多通知通道與商業需求
 
 ---
 
-## 系統架構說明
-
-專案目前採用典型的桌面應用分層架構：
-
-- **views**
-  - 負責畫面元件、表單輸入與畫面布局
-- **controllers**
-  - 負責事件綁定、互動流程與 UI 協調
-- **services**
-  - 負責提醒邏輯、通知整合、資料操作與查詢服務
-- **models**
-  - 定義資料模型與應用內部資料結構
-- **database**
-  - 負責 SQLite 初始化與連線管理
-- **utils**
-  - 放置共用工具與設定
-
-這種拆分方式讓通知邏輯不會直接耦合在 UI 層，也讓未來新增整合或替換模組時更容易控制影響範圍。
-
----
-
-## 安裝與執行方式
+## 安裝方式
 
 ### 1. 取得專案
 
 ```bash
-git clone <your-repository-url>
-cd Engineer-Hub
+git clone https://github.com/your-username/engineer-hub.git
+cd engineer-hub
 ```
 
 ### 2. 建立虛擬環境
@@ -103,71 +166,125 @@ macOS / Linux：
 source .venv/bin/activate
 ```
 
-### 3. 安裝相依套件
+### 3. 安裝依賴
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. 啟動應用程式
+### 4. 設定環境變數
+
+可參考 `.env.example` 建立 `.env` 檔案。
+
+常用設定如下：
+
+```env
+DISCORD_WEBHOOK_URL=your_discord_webhook_url
+REMINDER_POLL_INTERVAL_SECONDS=10
+LOG_LEVEL=INFO
+PORT=10000
+```
+
+### 5. 啟動桌面版
 
 ```bash
 python main.py
 ```
 
+### 6. 啟動雲端 API 版
+
+```bash
+python render_app.py
+```
+
 ---
 
-## 設定說明
+## 使用教學
+
+### 桌面版使用流程
+
+1. 啟動應用程式。
+2. 進入任務 / 提醒管理介面。
+3. 建立一筆新的任務。
+4. 填入標題、分類、描述、提醒時間與狀態。
+5. 儲存後，系統會將資料寫入本地資料庫。
+6. 若已設定 Discord Webhook，系統可立即發送建立成功通知。
+7. 到達提醒時間後，系統依原本排程邏輯發送正式提醒訊息。
 
 ### Discord Webhook 設定
 
-若要啟用 Discord 通知，請先準備一組有效的 Discord Webhook URL。
+1. 先到 Discord 頻道建立 Webhook。
+2. 複製 Webhook URL。
+3. 將 URL 填入設定頁或 `.env`。
+4. 儲存後即可啟用通知功能。
 
-設定步驟：
+### 適合展示的使用情境
 
-1. 啟動應用程式
-2. 開啟上方選單中的「**通知設定**」
-3. 在「**Discord 通知設定**」區塊輸入 Webhook URL
-4. 點擊「**連接 Discord**」
-5. 成功時會顯示 `Discord 連接成功`
-
-若連接失敗，請優先檢查：
-
-- Webhook URL 是否完整
-- Discord 頻道中的 Webhook 是否仍有效
-- 本機網路是否能正常對外連線
-
-> 合理假設：目前通知功能以 Discord 為主要外部通知通道，且不包含其他第三方通知服務。
+- 個人工作排程與提醒
+- 開發任務追蹤
+- 團隊內部提醒機制
+- 專案截止時間通知
+- 內部工具 MVP 展示
 
 ---
 
-## 使用方式
+## 部署教學（Render）
 
-### 提醒事項
+Engineer Hub 支援部署到 Render，讓提醒 API 與排程功能可在雲端持續運作。
 
-1. 進入提醒頁面
-2. 點擊「新增提醒」
-3. 輸入標題、日期、時間、分類、優先度與備註
-4. 儲存後，提醒資料會寫入本機 SQLite
-5. 若已設定 Discord，系統可在提醒建立與到期時發送通知
+### 1. 建立 GitHub Repository
 
-### 技術筆記
+將專案推送到你的 GitHub 倉庫。
 
-1. 切換到筆記頁面
-2. 建立或編輯筆記內容
-3. 將工作知識、操作紀錄或技術整理保存在本機
+### 2. 登入 Render
 
-### Code Snippet
+前往 [https://render.com](https://render.com) 並建立新的 Web Service。
 
-1. 進入程式片段頁面
-2. 建立常用 snippet
-3. 作為日後重用與查找的程式碼資產
+### 3. 連接 GitHub 專案
 
-### 搜尋
+選擇你的 `Engineer Hub` Repository。
 
-1. 開啟搜尋頁面
-2. 輸入關鍵字
-3. 依搜尋結果快速定位需要的內容
+### 4. 設定部署參數
+
+可參考專案中的 `render.yaml`，或手動設定：
+
+- Runtime: Python
+- Build Command:
+
+```bash
+pip install -r requirements.txt
+```
+
+- Start Command:
+
+```bash
+python render_app.py
+```
+
+### 5. 設定環境變數
+
+在 Render 後台加入：
+
+```env
+DISCORD_WEBHOOK_URL=your_discord_webhook_url
+REMINDER_POLL_INTERVAL_SECONDS=10
+LOG_LEVEL=INFO
+PORT=10000
+```
+
+### 6. 部署完成後驗證
+
+部署完成後可測試以下端點：
+
+- `/health`
+- `/test-discord`
+- `/api/reminders`
+
+### Render 部署價值
+
+- 讓排程提醒可在雲端持續執行
+- 適合作為桌面版之外的遠端提醒服務
+- 可展示從本地應用延伸到雲端服務的完整能力
 
 ---
 
@@ -175,54 +292,68 @@ python main.py
 
 ```text
 Engineer Hub/
-├─ controllers/      # 畫面流程控制與事件處理
-├─ database/         # SQLite 初始化與資料庫連線
-├─ data/             # 本機資料檔案
-├─ models/           # 資料模型
-├─ services/         # 核心業務邏輯與 Discord 通知服務
-├─ utils/            # 共用設定與工具函式
-├─ views/            # PyQt 畫面元件
-├─ main.py           # 應用程式入口
-└─ requirements.txt  # Python 相依套件
+├─ controllers/         # 控制器層，負責 GUI 事件與流程協調
+├─ data/                # SQLite 資料檔
+├─ database/            # 資料庫初始化與連線管理
+├─ models/              # 資料模型
+├─ services/            # 業務邏輯、通知、API、排程服務
+├─ utils/               # 共用工具與設定
+├─ views/               # PyQt GUI 畫面
+├─ .env.example         # 環境變數範例
+├─ main.py              # 桌面版入口
+├─ render_app.py        # Render / 雲端 API 入口
+├─ render.yaml          # Render 部署設定
+├─ requirements.txt     # Python 依賴
+└─ README.md            # 專案說明文件
 ```
 
 ---
 
-## 未來規劃
+## 未來功能
 
-- [ ] 提升提醒通知的可靠性與例外處理
-- [ ] 改善搜尋結果呈現與篩選能力
-- [ ] 為筆記與 snippet 增加更完整的分類/標籤管理
-- [ ] 強化資料匯出與備份能力
-- [ ] 提供更完整的桌面打包與發佈流程
-- [ ] 增加測試覆蓋率與開發者文件
-
-> Roadmap 為合理規劃建議，並不代表目前版本已全部實作。
-
----
-
-## 授權
-
-建議採用 **MIT License**。  
-若你準備將此專案公開於 GitHub，MIT 是相對成熟且常見的選擇，易於展示與再利用。
+- 使用者登入與權限系統
+- 多使用者 / 多工作區支援
+- Slack / Email / LINE 等更多通知通道
+- 任務標籤、篩選、優先級視覺化
+- 任務統計儀表板
+- 匯出報表與歷史紀錄查詢
+- 任務附件與檔案管理
+- 雲端同步與跨裝置使用
+- REST API 文件化與 SDK 支援
+- SaaS 化與訂閱制版本擴充
 
 ---
 
-## 作者資訊
+## 商業應用方向
 
-**Author**：Your Name  
-**Project Type**：Desktop Productivity Tool / Developer Workspace  
-**Stack**：Python, PyQt6, SQLite, requests, Discord Webhook
+Engineer Hub 可作為以下類型產品的原型或基礎版本：
 
-若用於公開展示，建議補上：
+- 團隊任務提醒平台
+- 工程管理內部工具
+- 專案排程通知系統
+- Discord 整合型工作通知工具
+- 輕量型企業流程自動化平台
 
-- GitHub 個人頁面
-- Email
-- LinkedIn 或作品集連結
+對作品集來說，這個專案能夠呈現：
+
+- 從桌面應用到雲端部署的完整開發能力
+- 實用型通知系統設計能力
+- 商業產品雛形的架構規劃能力
+- 對可維護性與擴充性的工程思維
 
 ---
 
-## 備註
 
-本 README 內容依目前專案可見結構與功能撰寫，未描述未實作或無法確認的功能。  
-若未來調整提醒通知策略、資料模型或 UI 流程，建議同步更新文件內容，確保 README 與實際版本一致。
+## License
+
+本專案可依需求使用 MIT License。
+
+如果你要將它作為作品集展示，建議保留：
+
+- 清楚的專案定位
+- Demo 截圖
+- 部署連結
+- 技術亮點
+- 未來商業化擴充方向
+
+這樣能讓招聘方、客戶或合作夥伴更快理解這個專案的價值。
